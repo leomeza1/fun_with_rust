@@ -32,10 +32,36 @@ fn main() {
              show_car.model,
              show_car.top_speed);
 
+    // Struct Update Syntax:
+    //------------------------
+    // This is a way to instantiate another Car instance using
+    // some of the data from an existing Car instance. In this
+    // example the 'previous_car' object is created using the
+    // specified make and model fields, but then we tell the
+    // Car constructor to copy the rest of the fields from the
+    // 'show_car' object.
+    let previous_car : Car = Car {
+        make : String::from("Ford"),
+        model : String::from("Mustang"),
+        ..show_car
+    };
+
+    println!("My previous car was a {} {} with a top speed of {}.",
+             previous_car.make,
+             previous_car.model,
+             previous_car.top_speed);
+
 }
 
 // This function is used to create a new instance of the struct Car.
 fn car_constructor(make : String, model : String, top_speed : usize) -> Car {
+
+    // Field Init Shorthand:
+    //------------------------
+    // Since the field names (make, model, and top_speed) of the Car
+    // struct are the same as the function parameter names of the
+    // 'car_constructor' function we can simply pass the names into
+    // the Car constructor when instantiating the object instance.
     Car {
         make,
         model,
