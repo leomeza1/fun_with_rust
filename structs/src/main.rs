@@ -1,4 +1,5 @@
 // A data structure for describing a car
+// Note that structs use curly brackets '{' and '}'
 struct Car {
     make : String,
     model : String,
@@ -6,10 +7,53 @@ struct Car {
 }
 
 // A tuple structure for describing a point in 3D space
-struct Point (i32, i32, i32);
+// Note that tuple structs use parentheses '(' and ')'
+struct Point3D (i32, i32, i32);
 
 // A tuple structure for describing a color
-struct Color (i32, i32, i32);
+// Note that tuple structs use parentheses '(' and ')'
+struct ColorRGB (i32, i32, i32);
+
+// A unit-like struct.
+struct UnitLike;
+
+// A data structure for modeling a rectangle
+struct Rectangle {
+    width : u32,
+    height : u32,
+}
+
+// A data structure for modeling a square
+struct Square {
+    width : u32,
+}
+
+// And implementation block for defining behaviors to Rectangles
+impl Rectangle {
+
+    // Returns the area of a rectangle. Note that the self
+    // parameter gives the function an immutable reference,
+    // so the function is not allowed to change any state of
+    // the referenced object (cannot change width or height)
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    // Takes a mutable reference to a rectangle and increases
+    // the width by 1.
+    fn grow_width(&mut self) {
+        self.width += 1
+    }
+
+    // Takes ownership of a Rectagle and returns a Square. The
+    // data owned by the Rectangle is moved. Thus, when this
+    // function returns, the Rectangle is no longer valid.
+    fn make_square(self) -> Square {
+        Square { 
+            width : self.height  // could have used self.width
+        }
+    }
+}
 
 fn main() {
 
@@ -106,23 +150,69 @@ fn main() {
     //
     //-----------------------------------------------------------------
 
-    let black: Color = Color(0, 0, 0);
-    let origin : Point = Point(0, 0, 0);
+    // Note the use of parenthases '(' and ')'
+    let black: ColorRGB = ColorRGB(0, 0, 0);
+    let origin : Point3D = Point3D(0, 0, 0);
 
-    // pass a Color object to a function that expects a Color object
+    // pass a ColorRGB object to a function that expects a ColorRGB object
     print_color(black);
 
     // tuple struct data can be accessed using pattern matching (destructuring)
-    let Point(x, y, z) = origin;
+    let Point3D(x, y, z) = origin;
 
     println!("The origin is at {}, {}, {}.", x, y, z);
 
     //-----------------------------------------------------------------
     // This function call will fail to compile because the function is
-    // expecting a Color, but we're giving it a Point. This type safety
-    // is an improvement over basic tuples.
+    // expecting a ColorRGB, but we're giving it a Point3D. This type
+    // safety is an improvement over basic tuples.
     //-----------------------------------------------------------------
     //print_color(origin);
+
+
+    //-----------------------------------------------------------------
+    //
+    //                      Unit-Like Structs
+    //
+    //-----------------------------------------------------------------
+
+    // A unit-like struct is useful when we need to add behaviors to a
+    // type using traits. This example will be expanded later to include
+    // demonstration of how to implement a trait.
+    let _ul_struct: UnitLike = UnitLike;
+
+
+    //-----------------------------------------------------------------
+    //
+    //                   behavior with impl blocks
+    //
+    //-----------------------------------------------------------------
+
+    // Note that the rectangle is mutable because we use the grow_width
+    // function which changes state data in the rectangle
+    let mut rectangle : Rectangle = Rectangle { width: 10, height: 10 };
+
+    println!("The area of the rectangle is {}", rectangle.area());
+
+    // Call grow_width to increase the width of the rectangle
+    rectangle.grow_width();
+
+    println!("Now the area of the rectangle is {}", rectangle.area());
+
+    // Create a Square using the 'rectangle.make_square' function. Note
+    // that this function takes ownership of the rectangle data and moves
+    // the data to create the Square. Thus, the rectangle variable no
+    // longer owns any data, it would be invalid to use rectangle after
+    // this function returns.
+    let square : Square = rectangle.make_square();
+
+    println!("The area of the square is {}", square.width * square.width);
+
+    // This will not compile because the rectangle was moved when we
+    // called the 'make_square' function. So, the rectangle variable no
+    // longer has ownership of the data (width and height) that it had
+    // before.
+    //println!("Now the area of the rectangle is {}", rectangle.area());
 
 }
 
@@ -142,7 +232,7 @@ fn car_constructor(make : String, model : String, top_speed : usize) -> Car {
     }
 }
 
-fn print_color(color : Color) {
+fn print_color(color : ColorRGB) {
 
     println!("The RGB code for this color is {}, {}, {}.",
              color.0, color.1, color.2);
