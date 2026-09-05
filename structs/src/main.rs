@@ -45,12 +45,25 @@ impl Rectangle {
         self.width += 1
     }
 
-    // Takes ownership of a Rectagle and returns a Square. The
+    // Takes ownership of a Rectangle and returns a Square. The
     // data owned by the Rectangle is moved. Thus, when this
     // function returns, the Rectangle is no longer valid.
     fn make_square(self) -> Square {
         Square { 
             width : self.height  // could have used self.width
+        }
+    }
+
+    // An associated function like this one does not take 'self'
+    // as a parameter and does not get invoked on a particular
+    // object. Instead, an associated function is invoked on the
+    // type itself using the '::' notation like 'Rectangle::new'.
+    // This particular associated function returns a new instance
+    // of a Rectangle.
+    fn new(width : u32, height : u32) -> Self {
+        Self {
+            width,
+            height
         }
     }
 }
@@ -213,6 +226,21 @@ fn main() {
     // longer has ownership of the data (width and height) that it had
     // before.
     //println!("Now the area of the rectangle is {}", rectangle.area());
+
+
+    //-----------------------------------------------------------------
+    //
+    //                     Associated functions
+    //
+    //-----------------------------------------------------------------
+
+    // This example shows how to invoke a function associated with the
+    // Rectangle type to create a new object. The function is named 'new',
+    // but it could be named anything. The name 'new' is just something
+    // that tends to be used for constructors like this.
+    let another_rectangle : Rectangle = Rectangle::new(25, 50);
+
+    println!("Now the area of the rectangle is {}", another_rectangle.area());
 
 }
 
